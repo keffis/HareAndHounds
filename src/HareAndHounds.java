@@ -6,7 +6,7 @@ public class HareAndHounds {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		System.out.println("HARALD ÄR BÖG!");
+		System.out.println("KEFFIS €R B…G!");
 	}
 
 }
