@@ -5,8 +5,12 @@ public class HareAndHounds {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		GameBoard gameBoard = new GameBoard();
-		System.out.println(gameBoard.toString());
+		// TODO Auto-generated method stub
+		while(true)
+		{
+			System.out.println("Keffis €R B…G SOM FAN!!!");
+		}
+
 		
 	}
 
