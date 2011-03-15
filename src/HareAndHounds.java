@@ -8,7 +8,7 @@ public class HareAndHounds {
 		// TODO Auto-generated method stub
 		while(true)
 		{
-			System.out.println("Keffis ÄR BÖG SOM FAN!!!");
+			System.out.println("Keffis €R B…G SOM FAN!!!");
 		}
 		
 	}
