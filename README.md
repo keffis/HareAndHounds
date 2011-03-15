@@ -1,11 +1,11 @@
 HareAndHounds
 =======
-hejhej äåö
+Det här är ett kandidatexamensprojekt som går ut på att göra en självlärande AI på spelet Hare and Hounds.
  
 Licens
 ------
     HareAndHounds
-    Copyright (C) 2010 keffis&hartwig
+    Copyright (C) 2011 hartwig&keffis Entertainment
  
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
