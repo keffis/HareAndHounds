@@ -10,8 +10,8 @@ public class GameBoard {
 	private int hare;
 	private int[] hounds;
 
-	
-	
+
+
 	public GameBoard()
 	{
 		gameGraph = new ArrayList[11];
@@ -75,17 +75,17 @@ public class GameBoard {
 		gameGraph[10].add(7);
 		gameGraph[10].add(8);
 		gameGraph[10].add(9);
-		
+
 		//place play pieces
 		hare = 10;
 		hounds = new int[3];
 		hounds[0] = 1;
 		hounds[1] = 0;
 		hounds[2] = 3;
-		
+
 		houndsTurn = true;
 	}
-	
+
 	public int hasWon()
 	{
 		if(hareHasWon())
@@ -95,43 +95,54 @@ public class GameBoard {
 		else
 			return 0;
 	}
-	
-	public boolean hareHasWon()
+
+	private boolean hareHasWon()
 	{
-		
-		return false;
+		if(stallingCount >= 10)
+			return true;
+		else
+			return false;
 	}
-	
+
 	public boolean moveHare(int x)
 	{
-		Random rand = new Random();
-		ArrayList<Integer> pos = possibleMovesHare();
-		hare = pos.get(rand.nextInt(pos.size()));
-		return true;
-	}
-	
-	public boolean moveHounds(int x)
-	{
-		Random rand = new Random();
-		int h = rand.nextInt(3);
-		ArrayList<Integer> pos = possibleMovesHound(h);
-		
-		while(pos.size() == 0)
+		if(!houndsTurn)
 		{
-			h = rand.nextInt(3);
-			pos = possibleMovesHound(h);
+			hare = x;
+			houndsTurn = !houndsTurn;
+			return true;
 		}
+		else
+			return false;
+	}
+
+	public boolean moveHounds(int h, int x)
+	{
+		if(houndsTurn)
+		{
+			if(!houndsMoveIsForward())
+				stallingCount++;
+			else
+				stallingCount = 0;
 			
-			
-		hounds[h] = pos.get(rand.nextInt(pos.size()));
-		return true;
+			hounds[h] = x;
+			houndsTurn = !houndsTurn;
+			return true;
+		}
+		else
+			return false;
 	}
 	
+	private boolean houndsMoveIsForward()
+	{
+		return true;
+	}
+
 	public ArrayList<Integer> possibleMovesHare()
 	{
 		ArrayList<Integer> nei = gameGraph[hare];
-		ArrayList moves = new ArrayList();
-		
+		ArrayList<Integer> moves = new ArrayList<Integer>();
+
 		for(Integer i : nei)
 		{
 			if(!(i == hounds[0] || i == hounds[1] || i == hounds[2]))
@@ -139,12 +150,12 @@ public class GameBoard {
 		}
 		return moves;
 	}
-	
+
 	public ArrayList<Integer> possibleMovesHound(int hound)
 	{
 		ArrayList<Integer> nei = gameGraph[hounds[hound]];
-		ArrayList moves = new ArrayList();
-				
+		ArrayList<Integer> moves = new ArrayList<Integer>();
+
 		for(Integer i : nei)
 		{
 			if(hounds[hound] == 1 && i == 0)
@@ -158,15 +169,15 @@ public class GameBoard {
 			else
 				moves.add(i);			
 		}
-		
+
 		return moves;
 	}
-	
+
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder();
 		String sa[] = new String[11];
-		
+
 		for(int i = 0; i < gameGraph.length; i++)
 		{
 			if(i == hare)
@@ -178,18 +189,18 @@ public class GameBoard {
 			else if(i == hounds[2])
 				sa[i] = "H2";
 			else
-				sa[i] = "__";
+				sa[i] = "# ";
 		}
-		
-		
-		sb.append("     " + sa[1] + "   " + sa[4] + "   " + sa[7] + "     \n");
-		sb.append("                       \n");
-		sb.append(sa[0] + "   " + sa[2] + "   " + sa[5] + "   " + sa[8] + "   " + sa[10] + "\n");
-		sb.append("                       \n");
-		sb.append("     " + sa[3] + "   " + sa[6] + "   " + sa[9] + "     \n");
-		
-	
-		
+
+
+		sb.append("      " + sa[1] + " -  " + sa[4] + " -  " + sa[7] + " \n");
+		sb.append("   /  |  \\  |  /  |  \\ \n");
+		sb.append(sa[0] + " -  " + sa[2] + " -  " + sa[5] + " -  " + sa[8] + " -  " + sa[10] + " \n");
+		sb.append("   \\  |  /  |  \\  |  / \n");
+		sb.append("      " + sa[3] + " -  " + sa[6] + " -  " + sa[9] + " \n");
+
+
+
 		return sb.toString();
 	}
 }
