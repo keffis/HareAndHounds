@@ -20,9 +20,10 @@ public class HareAndHounds {
 
 
 		int houndPlayer = 0;
-		HoundPlayer houndPlayers[] = new HoundPlayer[2];
+		HoundPlayer houndPlayers[] = new HoundPlayer[3];
 		houndPlayers[0] = new HumanHoundPlayer(gameBoard);
 		houndPlayers[1] = new RandomHoundPlayer(gameBoard);
+		houndPlayers[2] = new QLearningHoundPlayer(gameBoard);
 
 
 
@@ -89,9 +90,9 @@ public class HareAndHounds {
 
 			//choose if you wanna se the gameboard
 			choice = -1;
-			while(choice < 0 && choice > 2)
+			while(choice < 0 || choice > 2)
 			{
-				System.out.print("Vill du se spelplanen?");
+				System.out.println("Vill du se spelplanen?");
 				System.out.println("1. Ja");
 				System.out.println("2. Nej");
 
@@ -112,9 +113,17 @@ public class HareAndHounds {
 			for(int i = 0; i < numberOfGames; i++)
 			{
 				gameBoard.reset();
+				
 				if(showGameBoard)
+				{
+					int gn = i + 1;
+					System.out.println("Spel " + gn + " av " + numberOfGames + ".");
 					System.out.println(gameBoard.toString());
+					Thread.sleep(2000);
+				}
 
+				
+					
 				while(gameBoard.hasWon() == 0)
 				{
 
@@ -158,11 +167,26 @@ public class HareAndHounds {
 				//System.out.println(gameBoard.hasWon());
 
 				if(gameBoard.hasWon() == 1)
+				{
+					if(showGameBoard)
+						System.out.println("Haren vann, han rymde!");
 					stats.hareEscapeWins++;
+				}
 				if(gameBoard.hasWon() == 2)
+				{
+					if(showGameBoard)
+						System.out.println("Haren vann, hundarna dröjde för länge!");
 					stats.hareStallingWins++;
+				}
 				if(gameBoard.hasWon() == 3)
+				{
+					if(showGameBoard)
+						System.out.println("Hundarna vann, de åt upp haren!");
 					stats.houndWins++;
+				}
+				
+				if(showGameBoard)
+					Thread.sleep(2000);
 
 			}
 			
