@@ -145,7 +145,9 @@ public class GameBoard {
 
 	public boolean moveHare(int x)
 	{
-		if(!houndsTurn)
+		ArrayList<Integer> pos = possibleMovesHare();
+		
+		if(!houndsTurn && pos.contains(x))
 		{
 			hare = x;
 			houndsTurn = !houndsTurn;
@@ -157,7 +159,9 @@ public class GameBoard {
 
 	public boolean moveHounds(int h, int x)
 	{
-		if(houndsTurn)
+		ArrayList<Integer> pos = possibleMovesHound(h);
+		
+		if(houndsTurn && pos.contains(x))
 		{
 			if(houndsMoveIsForward(h, x))
 				stallingCount = 0;
@@ -220,6 +224,16 @@ public class GameBoard {
 
 		return moves;
 	}
+	
+	public void reset()
+	{
+		hare = 10;
+		hounds[0] = 1;
+		hounds[1] = 0;
+		hounds[2] = 3;
+		stallingCount = 0;
+		houndsTurn = true;
+	}
 
 	public String toString()
 	{
@@ -237,7 +251,7 @@ public class GameBoard {
 			else if(i == hounds[2])
 				sa[i] = "H2";
 			else
-				sa[i] = "# ";
+				sa[i] = i + " ";
 		}
 
 

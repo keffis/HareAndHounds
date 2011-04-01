@@ -10,9 +10,9 @@ public class RandomHoundPlayer implements HoundPlayer {
 
 	private GameBoard gameBoard;
 	
-	RandomHoundPlayer(GameBoard gm)
+	RandomHoundPlayer(GameBoard gb)
 	{
-		gameBoard = gm;
+		gameBoard = gb;
 	}
 	
 	@Override

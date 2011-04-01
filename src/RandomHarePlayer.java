@@ -13,9 +13,9 @@ public class RandomHarePlayer implements HarePlayer {
 
 	private GameBoard gameBoard;
 	
-	RandomHarePlayer(GameBoard gm)
+	RandomHarePlayer(GameBoard gb)
 	{
-		gameBoard = gm;
+		gameBoard = gb;
 	}
 	
 	@Override
