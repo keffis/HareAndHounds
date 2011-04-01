@@ -16,6 +16,8 @@ public class HareAndHounds {
 		harePlayer = new RandomHarePlayer(gameBoard);
 		houndPlayer = new RandomHoundPlayer(gameBoard);
 		
+		
+		
 		System.out.println(gameBoard.toString());
 		System.out.println("HARENS: " + gameBoard.possibleMovesHare());
 		System.out.println("HUND 0: " + gameBoard.possibleMovesHound(0));
@@ -24,16 +26,23 @@ public class HareAndHounds {
 			
 		while(gameBoard.hasWon() == 0)
 		{
-			System.out.println("HUNDARNAS TUR");
-			houndPlayer.play();
-			System.out.println("-------------------------------------------------");
-			System.out.println(gameBoard.toString());
-			Thread.sleep(1000);
-			System.out.println("HARENS TUR");
-			harePlayer.play();
-			System.out.println("-------------------------------------------------");
-			System.out.println(gameBoard.toString());
-			Thread.sleep(1000);
+			
+			if(gameBoard.getHoundsTurn())
+			{
+				System.out.println("HUNDARNAS TUR");
+				houndPlayer.play();
+				System.out.println("-------------------------------------------------");
+				System.out.println(gameBoard.toString());
+				Thread.sleep(1000);
+			}
+			else
+			{
+				System.out.println("HARENS TUR");
+				harePlayer.play();
+				System.out.println("-------------------------------------------------");
+				System.out.println(gameBoard.toString());
+				Thread.sleep(1000);
+			}
 		}
 		
 		System.out.println(gameBoard.hasWon());

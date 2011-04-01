@@ -85,20 +85,59 @@ public class GameBoard {
 
 		houndsTurn = true;
 	}
+	
+	public int getStallingCount()
+	{
+		return stallingCount;
+	}
 
 	public int hasWon()
 	{
-		if(hareHasWon())
-			return 1;
-		else if(possibleMovesHare().size() == 0)
-			return 2; //Hounds win
+		if(hareHasWon() == 1)
+			return 1; //Hare win by running away
+		else if(hareHasWon() == 2)
+			return 2; //Hare win by hounds stalling
+		else if(houndsHasWon())
+			return 3; //Hounds win
 		else
 			return 0;
 	}
-
-	private boolean hareHasWon()
+	
+	public boolean getHoundsTurn()
 	{
-		if(stallingCount >= 10)
+		return houndsTurn;
+	}
+
+	private int hareHasWon()
+	{
+		if(hare == 0)
+		{
+			return 1;
+		}
+		else if(hare <= 3)
+		{
+			if(hounds[0] > 3 && hounds[1] > 3 && hounds[2] > 3)
+				return 1;
+		}
+		else if(hare <= 6)
+		{
+			if(hounds[0] > 6 && hounds[1] > 6 && hounds[2] > 6)
+				return 1;
+		}
+		else if(stallingCount >= 10)
+		{
+			return 2;
+		}
+		else
+		{
+			return 0;
+		}
+		return 0;
+	}
+	
+	private boolean houndsHasWon()
+	{
+		if(possibleMovesHare().size() == 0)
 			return true;
 		else
 			return false;
@@ -120,10 +159,10 @@ public class GameBoard {
 	{
 		if(houndsTurn)
 		{
-			if(!houndsMoveIsForward())
-				stallingCount++;
-			else
+			if(houndsMoveIsForward(h, x))
 				stallingCount = 0;
+			else
+				stallingCount++;
 			
 			hounds[h] = x;
 			houndsTurn = !houndsTurn;
@@ -133,9 +172,18 @@ public class GameBoard {
 			return false;
 	}
 	
-	private boolean houndsMoveIsForward()
+	private boolean houndsMoveIsForward(int h, int x)
 	{
-		return true;
+		if(hounds[h] == 0)
+			return true;
+		else if(hounds[h] <= 3 && x > 3)
+			return true;
+		else if(hounds[h] <= 6 && x > 6)
+			return true;
+		else if(hounds[h] <= 9 && x > 9)
+			return true;
+		else
+			return false;
 	}
 
 	public ArrayList<Integer> possibleMovesHare()
