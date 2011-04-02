@@ -15,7 +15,6 @@ public class RandomHoundPlayer implements HoundPlayer {
 		gameBoard = gb;
 	}
 	
-	@Override
 	public void play() {
 		Random rand = new Random();
 		int h = rand.nextInt(3);
@@ -36,8 +35,6 @@ public class RandomHoundPlayer implements HoundPlayer {
 	
 	private boolean canMove()
 	{
-		
-		
 		if(gameBoard.possibleMovesHound(0).size() == 0 && gameBoard.possibleMovesHound(1).size() == 0 &&gameBoard.possibleMovesHound(2).size() == 0)
 			return false;
 		else

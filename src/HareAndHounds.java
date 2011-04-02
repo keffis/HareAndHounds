@@ -13,17 +13,20 @@ public class HareAndHounds {
 		//init start
 		GameBoard gameBoard = new GameBoard();
 		Scanner sc = new Scanner(System.in);
-		Stats stats = new Stats();
+		Stats totalStats = new Stats();
+		Stats latestStats = new Stats();
 		int numberOfGames = 0;
 		boolean showGameBoard = false;
 		boolean quit = false;
+		long timer = 0;
 
 
 		int houndPlayer = 0;
-		HoundPlayer houndPlayers[] = new HoundPlayer[3];
+		HoundPlayer houndPlayers[] = new HoundPlayer[4];
 		houndPlayers[0] = new HumanHoundPlayer(gameBoard);
 		houndPlayers[1] = new RandomHoundPlayer(gameBoard);
-		houndPlayers[2] = new QLearningHoundPlayer(gameBoard);
+		houndPlayers[2] = new QLearningHoundPlayer1(gameBoard);
+		houndPlayers[3] = new QLearningHoundPlayer2(gameBoard);
 
 
 
@@ -44,19 +47,32 @@ public class HareAndHounds {
 			int choice = -1;
 
 			//choose hound
-			while(choice < 0 || choice > 2)
+			while(choice < 0 || choice > 4)
 			{
 				System.out.println("Vem ska spela hundarna?");
 				System.out.println("1. Human");
 				System.out.println("2. Random");
+				System.out.println("3. Q-Learning 1");
+				System.out.println("4. Q-Learning 2");
 
 				choice = sc.nextInt();
 
-				if(choice > 2 && choice < 0)
+				if(choice > 4 && choice < 0)
 					System.out.println("Den hundspelaren finns inte.");
 				else
 					houndPlayer = choice - 1;
 			}
+			
+			double dchoice = -1.0;
+			//if q-learning, input settings
+			while(dchoice < 0 && houndPlayer == 2)
+			{
+				System.out.print("Q-Learning epsilon: ");
+				dchoice = Double.parseDouble(sc.next());
+				QLearningHoundPlayer1 qlhp = (QLearningHoundPlayer1) houndPlayers[2];
+				qlhp.setEpsilon(dchoice);
+			}
+				
 
 
 			//choose hare
@@ -109,7 +125,8 @@ public class HareAndHounds {
 			}
 
 
-
+			timer = System.nanoTime();
+			
 			for(int i = 0; i < numberOfGames; i++)
 			{
 				gameBoard.reset();
@@ -130,7 +147,17 @@ public class HareAndHounds {
 					if(gameBoard.getHoundsTurn())
 					{
 						if(showGameBoard)
+						{
 							System.out.println("HUNDARNAS TUR");
+							if(houndPlayer == 2)
+							{
+								QLearningHoundPlayer1 qlhp = (QLearningHoundPlayer1) houndPlayers[2];
+								qlhp.printCurrentQ();
+							}
+							
+						}
+						
+						
 
 						houndPlayers[houndPlayer].play();
 
@@ -170,19 +197,22 @@ public class HareAndHounds {
 				{
 					if(showGameBoard)
 						System.out.println("Haren vann, han rymde!");
-					stats.hareEscapeWins++;
+					totalStats.hareEscapeWins++;
+					latestStats.hareEscapeWins++;
 				}
 				if(gameBoard.hasWon() == 2)
 				{
 					if(showGameBoard)
 						System.out.println("Haren vann, hundarna dröjde för länge!");
-					stats.hareStallingWins++;
+					totalStats.hareStallingWins++;
+					latestStats.hareStallingWins++;
 				}
 				if(gameBoard.hasWon() == 3)
 				{
 					if(showGameBoard)
 						System.out.println("Hundarna vann, de åt upp haren!");
-					stats.houndWins++;
+					totalStats.houndWins++;
+					latestStats.houndWins++;
 				}
 				
 				if(showGameBoard)
@@ -190,7 +220,12 @@ public class HareAndHounds {
 
 			}
 			
-			System.out.println(stats);
+			totalStats.time += System.nanoTime() - timer;
+			latestStats.time = System.nanoTime() - timer;
+			System.out.println(totalStats);
+			System.out.println(latestStats);
+			latestStats.reset();
+			
 
 			System.out.println("Sluta spela?");
 			System.out.println("1. Ja");

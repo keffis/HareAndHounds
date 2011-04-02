@@ -3,7 +3,7 @@ import java.util.*;
  * @author Keffis
  *
  */
-public class GameBoard {
+public class GameBoard implements Cloneable {
 	private ArrayList<Integer> gameGraph[];
 	private boolean houndsTurn;
 	private int stallingCount;
@@ -79,16 +79,42 @@ public class GameBoard {
 		//place play pieces
 		hare = 10;
 		hounds = new int[3];
-		hounds[0] = 1;
-		hounds[1] = 0;
+		hounds[0] = 0;
+		hounds[1] = 1;
 		hounds[2] = 3;
+		Arrays.sort(hounds);
 
 		houndsTurn = true;
+	}
+	
+	public boolean getHoundsTurn()
+	{
+		return houndsTurn;
 	}
 	
 	public int getStallingCount()
 	{
 		return stallingCount;
+	}
+	
+	public int getHarePos()
+	{
+		return hare;
+	}
+	
+	public int[] getHoundsPos()
+	{
+		return hounds;
+	}
+	
+	public void setHarePos(int h)
+	{
+		hare = h;
+	}
+	
+	public void setHoundsPos(int[] h)
+	{
+		hounds = h;
 	}
 
 	public int hasWon()
@@ -103,11 +129,6 @@ public class GameBoard {
 			return 0;
 	}
 	
-	public boolean getHoundsTurn()
-	{
-		return houndsTurn;
-	}
-
 	private int hareHasWon()
 	{
 		if(hare == 0)
@@ -169,6 +190,7 @@ public class GameBoard {
 				stallingCount++;
 			
 			hounds[h] = x;
+			Arrays.sort(hounds);
 			houndsTurn = !houndsTurn;
 			return true;
 		}
@@ -228,8 +250,8 @@ public class GameBoard {
 	public void reset()
 	{
 		hare = 10;
-		hounds[0] = 1;
-		hounds[1] = 0;
+		hounds[0] = 0;
+		hounds[1] = 1;
 		hounds[2] = 3;
 		stallingCount = 0;
 		houndsTurn = true;
