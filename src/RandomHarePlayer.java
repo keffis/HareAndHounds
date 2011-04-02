@@ -18,7 +18,6 @@ public class RandomHarePlayer implements HarePlayer {
 		gameBoard = gb;
 	}
 	
-	@Override
 	public void play() {
 		Random rand = new Random();
 		ArrayList<Integer> pos = gameBoard.possibleMovesHare();

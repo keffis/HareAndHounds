@@ -13,7 +13,6 @@ public class HumanHoundPlayer implements HoundPlayer {
 		gameBoard = gb;
 	}
 	
-	@Override
 	public void play() {
 		System.out.println("Möjliga drag hund 0: " + gameBoard.possibleMovesHound(0));
 		System.out.println("Möjliga drag hund 1: " + gameBoard.possibleMovesHound(1));

@@ -13,7 +13,6 @@ public class HumanHarePlayer implements HarePlayer {
 		gameBoard = gb;
 	}
 	
-	@Override
 	public void play() {
 		System.out.println("Möjliga drag hare: " + gameBoard.possibleMovesHare());
 		
