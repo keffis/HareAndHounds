@@ -148,6 +148,7 @@ public class QLearningHoundPlayer1 implements HoundPlayer {
 			
 			if(gameBoard.hasWon() == 3)
 			{
+				System.out.println("HEJSAN!");
 				currentq = q[chsp[0]][chsp[1]][chsp[2]][chp][houndMoving][position];
 				nextmaxq = q[nhsp[0]][nhsp[1]][nhsp[2]][chp][nextHoundMoving][nextPosition];
 				currentq = currentq + alpha * (100.0 + gamma*(nextmaxq) - currentq);
@@ -177,7 +178,29 @@ public class QLearningHoundPlayer1 implements HoundPlayer {
 
 	private double reward()
 	{
-		if(nextGameBoard.hasWon() == 1)
+		if(gameBoard.hasWon() == 1)
+		{
+			System.out.println("HAREN VANN");
+			return -100.0;
+		}
+		else if(gameBoard.hasWon() == 2)
+		{
+			System.out.println("HAREN VANN");
+			return -100.0;
+		}
+		else if(gameBoard.hasWon() == 3)
+		{
+			System.out.println("HUNDANDA VANN!");
+			return 100.0;
+		}
+		else
+			return 0.0;
+		
+		
+		/*
+		 * 
+		 
+		  if(nextGameBoard.hasWon() == 1)
 			return -100.0;
 		else if(nextGameBoard.hasWon() == 2)
 			return -100.0;
@@ -185,6 +208,7 @@ public class QLearningHoundPlayer1 implements HoundPlayer {
 			return 100.0;
 		else
 			return 0.0;
+		 */
 		
 		
 		/*

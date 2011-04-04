@@ -135,23 +135,19 @@ public class GameBoard implements Cloneable {
 		{
 			return 1;
 		}
-		else if(hare <= 3)
+		if(hare <= 3)
 		{
 			if(hounds[0] > 3 && hounds[1] > 3 && hounds[2] > 3)
 				return 1;
 		}
-		else if(hare <= 6)
+		if(hare <= 6)
 		{
 			if(hounds[0] > 6 && hounds[1] > 6 && hounds[2] > 6)
 				return 1;
 		}
-		else if(stallingCount >= 10)
+		if(stallingCount >= 10)
 		{
 			return 2;
-		}
-		else
-		{
-			return 0;
 		}
 		return 0;
 	}
@@ -189,6 +185,9 @@ public class GameBoard implements Cloneable {
 			else
 				stallingCount++;
 			
+			//if(stallingCount > 10)
+				//System.out.println("SC: " + stallingCount);
+			
 			hounds[h] = x;
 			Arrays.sort(hounds);
 			houndsTurn = !houndsTurn;
@@ -198,9 +197,9 @@ public class GameBoard implements Cloneable {
 			return false;
 	}
 	
-	private boolean houndsMoveIsForward(int h, int x)
+	public boolean houndsMoveIsForward(int h, int x)
 	{
-		if(hounds[h] == 0)
+		if(hounds[h] == 0 && x > 0)
 			return true;
 		else if(hounds[h] <= 3 && x > 3)
 			return true;
@@ -253,6 +252,7 @@ public class GameBoard implements Cloneable {
 		hounds[0] = 0;
 		hounds[1] = 1;
 		hounds[2] = 3;
+		Arrays.sort(hounds);
 		stallingCount = 0;
 		houndsTurn = true;
 	}

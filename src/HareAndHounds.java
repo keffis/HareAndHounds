@@ -72,6 +72,14 @@ public class HareAndHounds {
 				QLearningHoundPlayer1 qlhp = (QLearningHoundPlayer1) houndPlayers[2];
 				qlhp.setEpsilon(dchoice);
 			}
+			
+			while(dchoice < 0 && houndPlayer == 3)
+					{
+						System.out.print("Q-Learning epsilon: ");
+						dchoice = Double.parseDouble(sc.next());
+						QLearningHoundPlayer2 qlhp = (QLearningHoundPlayer2) houndPlayers[3];
+						qlhp.setEpsilon(dchoice);
+					}
 				
 
 
@@ -144,6 +152,12 @@ public class HareAndHounds {
 				while(gameBoard.hasWon() == 0)
 				{
 
+					if(gameBoard.getStallingCount() > 10)
+					{
+						//System.out.println(gameBoard);
+						//Thread.sleep(3000);
+					}
+					
 					if(gameBoard.getHoundsTurn())
 					{
 						if(showGameBoard)
@@ -156,9 +170,7 @@ public class HareAndHounds {
 							}
 							
 						}
-						
-						
-
+					
 						houndPlayers[houndPlayer].play();
 
 						if(showGameBoard)
@@ -167,6 +179,7 @@ public class HareAndHounds {
 							System.out.println(gameBoard.toString());
 							Thread.sleep(1000);
 						}
+						continue;
 
 					}
 					else
@@ -182,6 +195,7 @@ public class HareAndHounds {
 							System.out.println(gameBoard.toString());
 							Thread.sleep(1000);
 						}
+						continue;
 					}
 				}
 				/*
@@ -199,6 +213,8 @@ public class HareAndHounds {
 						System.out.println("Haren vann, han rymde!");
 					totalStats.hareEscapeWins++;
 					latestStats.hareEscapeWins++;
+					QLearningHoundPlayer2 qlhp = (QLearningHoundPlayer2) houndPlayers[3];
+					qlhp.updateQ();
 				}
 				if(gameBoard.hasWon() == 2)
 				{
