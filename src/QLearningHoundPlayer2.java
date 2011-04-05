@@ -1,11 +1,13 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Arrays;
 import java.util.Random;
 
 
-public class QLearningHoundPlayer2 implements HoundPlayer {
+public class QLearningHoundPlayer2 implements QLearningHoundPlayer {
 	GameBoard gameBoard;
-
+	LinkedList<StateActionContainer> log;
+	
 	double q[][][][][][][];
 	double epsilon;
 	double gamma;
@@ -29,7 +31,9 @@ public class QLearningHoundPlayer2 implements HoundPlayer {
 	QLearningHoundPlayer2(GameBoard gb)
 	{
 		gameBoard = gb;
-		//[hund][hund][hund][hare][hund som ska gå][möjliga drag] skynet
+		log = new LinkedList<StateActionContainer>();
+		
+		//[hund][hund][hund][hare][stallingcount][hund som ska gå][möjliga drag] skynet
 		q = new double[11][11][11][11][11][3][11];
 		epsilon = 0.5;
 		gamma = 0.7;
@@ -70,16 +74,17 @@ public class QLearningHoundPlayer2 implements HoundPlayer {
 		}
 		else
 		{
-			double maxQ = q[chsp[0]][chsp[1]][chsp[2]][chp][currentStallingCount][0][0];
+			double maxQ = Double.NEGATIVE_INFINITY;
 			houndMoving = 0;
 			moveTo = 0;
-
+			ArrayList<MoveContainer> lol = new ArrayList<MoveContainer>();
+			
 			for(int i = 0; i < 3; i++)
 			{
 				ArrayList<Integer> arrlist = gameBoard.possibleMovesHound(i);
 				for(Integer j : arrlist)
 				{
-					if(q[chsp[0]][chsp[1]][chsp[2]][chp][currentStallingCount][i][j] >= maxQ)
+					if(q[chsp[0]][chsp[1]][chsp[2]][chp][currentStallingCount][i][j] > maxQ)
 					{
 						maxQ = q[chsp[0]][chsp[1]][chsp[2]][chp][currentStallingCount][i][j];
 						houndMoving = i;
@@ -87,6 +92,22 @@ public class QLearningHoundPlayer2 implements HoundPlayer {
 					}
 				}
 			}
+			
+			
+			for(int i = 0; i < 3; i++)
+			{
+				ArrayList<Integer> arrlist = gameBoard.possibleMovesHound(i);
+				for(Integer j : arrlist)
+				{
+					if(q[chsp[0]][chsp[1]][chsp[2]][chp][currentStallingCount][i][j] == maxQ)
+					{
+						lol.add(new MoveContainer(i, j));
+					}
+				}
+			}
+			MoveContainer mc = lol.get(rand.nextInt(lol.size()));
+			houndMoving = mc.houndMoving;
+			moveTo = mc.moveTo;
 		}
 		
 		
@@ -116,7 +137,7 @@ public class QLearningHoundPlayer2 implements HoundPlayer {
 
 	private double currentMaxQ()
 	{
-		double max = q[chsp[0]][chsp[1]][chsp[2]][chp][currentStallingCount][0][0];
+		double max = Double.NEGATIVE_INFINITY;
 
 		for(int i = 0; i < 3; i++)
 		{
@@ -143,12 +164,14 @@ public class QLearningHoundPlayer2 implements HoundPlayer {
 
 	private double reward()
 	{
-		if(gameBoard.hasWon() == 1)
-			return -1000000.0;
+		if(gameBoard.hasWon() == 0)
+			return -1.0;
+		else if(gameBoard.hasWon() == 1)
+			return -10.0;
 		else if(gameBoard.hasWon() == 2)
-			return -1000000.0;
+			return -10.0;
 		else if(gameBoard.hasWon() == 3)
-			return 1000000.0;
+			return 1000.0;
 		else
 			return 0.0;
 
@@ -186,10 +209,53 @@ public class QLearningHoundPlayer2 implements HoundPlayer {
 			System.out.println(" ");
 		}
 	}
+	
+	public boolean qTableCheck()
+	{
+		int changes = 0;
+		for(int i = 0; i < 11; i++)
+		{
+			for(int j = 0; j < 11; j++)
+			{
+				for(int k = 0; k < 11; k++)
+				{
+					for(int l = 0; l < 11; l++)
+					{
+						for(int m = 0; m < 11; m++)
+						{
+							for(int n = 0; n < 3; n++)
+							{
+								for(int o = 0; o < 11; o++)
+								{
+									if(q[i][j][k][l][m][n][o] != 0.0)
+									{
+										//System.out.println("På plats [" + i + ", " + j + ", " + k + ", " + l + ", " + m + ", " + n + ", " + o + "] står det: " + q[i][j][k][l][m][n][o]);
+										changes++;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		System.out.println(changes);
+		return false;
+	}
 
-	void setEpsilon(double eps)
+	public void setEpsilon(double eps)
 	{
 		epsilon = eps;
+	}
+	
+	public void setAlpha(double alp)
+	{
+		alpha = alp;
+	}
+	
+	public void setGamma(double gam)
+	{
+		gamma = gam;
 	}
 
 }

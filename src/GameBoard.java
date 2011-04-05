@@ -3,7 +3,7 @@ import java.util.*;
  * @author Keffis
  *
  */
-public class GameBoard implements Cloneable {
+public class GameBoard {
 	private ArrayList<Integer> gameGraph[];
 	private boolean houndsTurn;
 	private int stallingCount;

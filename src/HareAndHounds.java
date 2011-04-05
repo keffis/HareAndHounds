@@ -13,8 +13,8 @@ public class HareAndHounds {
 		//init start
 		GameBoard gameBoard = new GameBoard();
 		Scanner sc = new Scanner(System.in);
-		Stats totalStats = new Stats();
-		Stats latestStats = new Stats();
+		Stats totalStats = new Stats("Total");
+		Stats latestStats = new Stats("Senaste");
 		int numberOfGames = 0;
 		boolean showGameBoard = false;
 		boolean quit = false;
@@ -62,25 +62,25 @@ public class HareAndHounds {
 				else
 					houndPlayer = choice - 1;
 			}
-			
-			double dchoice = -1.0;
+
+			double echoice = -1.0;
+			double achoice = -1.0;
+			double gchoice = -1.0;
 			//if q-learning, input settings
-			while(dchoice < 0 && houndPlayer == 2)
+			while((echoice < 0 && achoice < 0 && gchoice < 0) && (houndPlayer == 2 || houndPlayer == 3))
 			{
 				System.out.print("Q-Learning epsilon: ");
-				dchoice = Double.parseDouble(sc.next());
-				QLearningHoundPlayer1 qlhp = (QLearningHoundPlayer1) houndPlayers[2];
-				qlhp.setEpsilon(dchoice);
+				echoice = Double.parseDouble(sc.next());
+				System.out.print("Q-Learning alpha: ");
+				achoice = Double.parseDouble(sc.next());
+				System.out.print("Q-Learning gamma: ");
+				gchoice = Double.parseDouble(sc.next());
+				QLearningHoundPlayer qlhp = (QLearningHoundPlayer) houndPlayers[3];
+				qlhp.setEpsilon(echoice);
+				qlhp.setAlpha(achoice);
+				qlhp.setGamma(gchoice);
 			}
-			
-			while(dchoice < 0 && houndPlayer == 3)
-					{
-						System.out.print("Q-Learning epsilon: ");
-						dchoice = Double.parseDouble(sc.next());
-						QLearningHoundPlayer2 qlhp = (QLearningHoundPlayer2) houndPlayers[3];
-						qlhp.setEpsilon(dchoice);
-					}
-				
+
 
 
 			//choose hare
@@ -134,11 +134,13 @@ public class HareAndHounds {
 
 
 			timer = System.nanoTime();
+			totalStats.numberOfGames += numberOfGames;
+			latestStats.numberOfGames += numberOfGames;
 			
 			for(int i = 0; i < numberOfGames; i++)
 			{
-				gameBoard.reset();
 				
+				gameBoard.reset();
 				if(showGameBoard)
 				{
 					int gn = i + 1;
@@ -147,17 +149,10 @@ public class HareAndHounds {
 					Thread.sleep(2000);
 				}
 
-				
-					
+
+
 				while(gameBoard.hasWon() == 0)
 				{
-
-					if(gameBoard.getStallingCount() > 10)
-					{
-						//System.out.println(gameBoard);
-						//Thread.sleep(3000);
-					}
-					
 					if(gameBoard.getHoundsTurn())
 					{
 						if(showGameBoard)
@@ -168,11 +163,13 @@ public class HareAndHounds {
 								QLearningHoundPlayer1 qlhp = (QLearningHoundPlayer1) houndPlayers[2];
 								qlhp.printCurrentQ();
 							}
-							
-						}
-					
-						houndPlayers[houndPlayer].play();
 
+						}
+
+						houndPlayers[houndPlayer].play();
+						totalStats.numberOfMoves++;
+						latestStats.numberOfMoves++;
+						
 						if(showGameBoard)
 						{
 							System.out.println("-------------------------------------------------");
@@ -197,15 +194,8 @@ public class HareAndHounds {
 						}
 						continue;
 					}
+					
 				}
-				/*
-			if(gameBoard.hasWon() == 3)
-			{
-				System.out.println(gameBoard.toString());
-				Thread.sleep(5000);
-			}
-				 */
-				//System.out.println(gameBoard.hasWon());
 
 				if(gameBoard.hasWon() == 1)
 				{
@@ -230,7 +220,7 @@ public class HareAndHounds {
 					totalStats.houndWins++;
 					latestStats.houndWins++;
 				}
-				
+
 				if(showGameBoard)
 					Thread.sleep(2000);
 
@@ -238,10 +228,20 @@ public class HareAndHounds {
 			
 			totalStats.time += System.nanoTime() - timer;
 			latestStats.time = System.nanoTime() - timer;
+			totalStats.meanNumberOfMoves = (double)totalStats.numberOfMoves/(double)totalStats.numberOfGames;
+			latestStats.meanNumberOfMoves = (double)latestStats.numberOfMoves/(double)latestStats.numberOfGames;
+			
+			
 			System.out.println(totalStats);
 			System.out.println(latestStats);
 			latestStats.reset();
 			
+			if(houndPlayer == 3)
+			{
+				QLearningHoundPlayer2 qlhp = (QLearningHoundPlayer2) houndPlayers[3];
+				qlhp.qTableCheck();
+			}
+
 
 			System.out.println("Sluta spela?");
 			System.out.println("1. Ja");
