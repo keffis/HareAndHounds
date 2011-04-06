@@ -29,7 +29,7 @@ public class QLearningHoundPlayer1 implements QLearningHoundPlayer {
 	QLearningHoundPlayer1(GameBoard gb)
 	{
 		gameBoard = gb;
-		//[hund][hund][hund][hare][stallingcount][hund som ska gå][möjliga drag] skynet
+		//[hund][hund][hund][hare][stallingcount][hund som ska gï¿½][mï¿½jliga drag] skynet
 		q = new double[11][11][11][11][11][3][11];
 		epsilon = 0.5;
 		gamma = 0.7;
@@ -225,7 +225,7 @@ public class QLearningHoundPlayer1 implements QLearningHoundPlayer {
 								{
 									if(q[i][j][k][l][m][n][o] != 0.0)
 									{
-										//System.out.println("På plats [" + i + ", " + j + ", " + k + ", " + l + ", " + m + ", " + n + ", " + o + "] står det: " + q[i][j][k][l][m][n][o]);
+										//System.out.println("Pï¿½ plats [" + i + ", " + j + ", " + k + ", " + l + ", " + m + ", " + n + ", " + o + "] stï¿½r det: " + q[i][j][k][l][m][n][o]);
 										changes++;
 									}
 								}
