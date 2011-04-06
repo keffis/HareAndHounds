@@ -3,10 +3,10 @@ import java.util.Arrays;
 import java.util.Random;
 
 
-public class QLearningHoundPlayer1 implements QLearningHoundPlayer {
+public class QLearningHarePlayer1 implements HarePlayer{
 	GameBoard gameBoard;
 
-	double q[][][][][][][];
+	double q[][][][][][];
 	double epsilon;
 	double gamma;
 	double alpha;
@@ -17,20 +17,18 @@ public class QLearningHoundPlayer1 implements QLearningHoundPlayer {
 	int php;
 	int[] phsp;
 
-	int houndMoving;
 	int moveTo;
 
-	int previousHoundMoving;
 	int previousPosition;
-	
+
 	int currentStallingCount;
 	int previousStallingCount;
 
-	QLearningHoundPlayer1(GameBoard gb)
+	QLearningHarePlayer1(GameBoard gb)
 	{
 		gameBoard = gb;
 		//[hund][hund][hund][hare][stallingcount][hund som ska gå][möjliga drag] skynet
-		q = new double[11][11][11][11][11][3][11];
+		q = new double[11][11][11][11][11][11];
 		epsilon = 0.5;
 		gamma = 0.7;
 		alpha = 0.8;
@@ -40,79 +38,67 @@ public class QLearningHoundPlayer1 implements QLearningHoundPlayer {
 		chsp = Arrays.copyOf(gameBoard.getHoundsPos(), 3);
 		currentStallingCount = gameBoard.getStallingCount();
 		previousStallingCount = gameBoard.getStallingCount();
-		
+
 		php = chp;
 		phsp = Arrays.copyOf(chsp, 3);
 
-		houndMoving = 0;
 		moveTo = 0;
-		
+
 		currentStallingCount = 0;
 	}
 
 	public void play() {
 		Random rand = new Random();	
 		updateQ();
-		
-		
+
+
 		//chose action randomly for current state,else choose the one with max Q value
 		if(rand.nextDouble() <= epsilon)
 		{
-			houndMoving = rand.nextInt(3);
 
-			ArrayList<Integer> pos = gameBoard.possibleMovesHound(houndMoving);
-			while(canMove() && pos.size() == 0)
-			{
-				houndMoving = rand.nextInt(3);
-				pos = gameBoard.possibleMovesHound(houndMoving);
-			}
+			ArrayList<Integer> pos = gameBoard.possibleMovesHare();
 			moveTo = pos.get(rand.nextInt(pos.size()));
 		}
 		else
 		{
 			double maxQ = Double.NEGATIVE_INFINITY;
-			houndMoving = 0;
 			moveTo = 0;
-			ArrayList<MoveContainer> lol = new ArrayList<MoveContainer>();
-			
-			for(int i = 0; i < 3; i++)
+			ArrayList<Integer> lol = new ArrayList<Integer>();
+
+
+			ArrayList<Integer> arrlist = gameBoard.possibleMovesHare();
+			for(Integer m : arrlist)
 			{
-				ArrayList<Integer> arrlist = gameBoard.possibleMovesHound(i);
-				for(Integer j : arrlist)
+				if(q[chsp[0]][chsp[1]][chsp[2]][chp][currentStallingCount][m] > maxQ)
 				{
-					if(q[chsp[0]][chsp[1]][chsp[2]][chp][currentStallingCount][i][j] > maxQ)
-					{
-						maxQ = q[chsp[0]][chsp[1]][chsp[2]][chp][currentStallingCount][i][j];
-						houndMoving = i;
-						moveTo = j;
-					}
+					maxQ = q[chsp[0]][chsp[1]][chsp[2]][chp][currentStallingCount][m];
+					moveTo = m;
 				}
 			}
-			
-			
-			for(int i = 0; i < 3; i++)
+
+
+			arrlist = gameBoard.possibleMovesHare();
+			for(Integer m : arrlist)
 			{
-				ArrayList<Integer> arrlist = gameBoard.possibleMovesHound(i);
-				for(Integer j : arrlist)
+				if(q[chsp[0]][chsp[1]][chsp[2]][chp][currentStallingCount][m] == maxQ)
 				{
-					if(q[chsp[0]][chsp[1]][chsp[2]][chp][currentStallingCount][i][j] == maxQ)
-					{
-						lol.add(new MoveContainer(i, j));
-					}
+					lol.add(m);
 				}
 			}
-			MoveContainer mc = lol.get(rand.nextInt(lol.size()));
-			houndMoving = mc.houndMoving;
-			moveTo = mc.moveTo;
+
+			if(lol.size() <= 0)
+				System.out.println("HARALD E BÖG!");
+			
+			moveTo = lol.get(rand.nextInt(lol.size()));
 		}
-		
-		
-		gameBoard.moveHounds(houndMoving, moveTo);
-		
-		
-		if(gameBoard.hasWon() == 2 || gameBoard.hasWon() == 3)
+
+
+		gameBoard.moveHare(moveTo);
+
+
+		if(gameBoard.hasWon() == 1)
 			updateQ();
-		
+
 		phsp = Arrays.copyOf(chsp, 3);
 		php = chp;
 		previousStallingCount = currentStallingCount;
@@ -124,29 +110,32 @@ public class QLearningHoundPlayer1 implements QLearningHoundPlayer {
 		chsp = gameBoard.getHoundsPos();
 		chp = gameBoard.getHarePos();
 		currentStallingCount = gameBoard.getStallingCount();
-		
-		double previousq = q[phsp[0]][phsp[1]][phsp[2]][php][previousStallingCount][houndMoving][moveTo];
+
+		double previousq = q[phsp[0]][phsp[1]][phsp[2]][php][previousStallingCount][moveTo];
 		double currentmaxq = currentMaxQ();
 
-		q[phsp[0]][phsp[1]][phsp[2]][php][previousStallingCount][houndMoving][moveTo] = previousq + alpha *(reward() + (gamma * currentmaxq) - previousq);
+		q[phsp[0]][phsp[1]][phsp[2]][php][previousStallingCount][moveTo] = previousq + alpha *(reward() + (gamma * currentmaxq) - previousq);
 	}
 
 	private double currentMaxQ()
 	{
 		double max = Double.NEGATIVE_INFINITY;
 
-		for(int i = 0; i < 3; i++)
+
+		ArrayList<Integer> arrlist = gameBoard.possibleMovesHare();
+		for(Integer m : arrlist)
 		{
-			ArrayList<Integer> arrlist = gameBoard.possibleMovesHound(i);
-			for(Integer j : arrlist)
+			if(q[chsp[0]][chsp[1]][chsp[2]][chp][currentStallingCount][m] >= max)
 			{
-				if(q[chsp[0]][chsp[1]][chsp[2]][chp][currentStallingCount][i][j] >= max)
-				{
-					max = q[chsp[0]][chsp[1]][chsp[2]][chp][currentStallingCount][i][j];
-				}
+				max = q[chsp[0]][chsp[1]][chsp[2]][chp][currentStallingCount][m];
 			}
 		}
-		return max;
+		if(max == Double.NEGATIVE_INFINITY)
+		{
+			return 0.0;
+		}
+		else
+			return max;
 	}
 
 
@@ -163,11 +152,11 @@ public class QLearningHoundPlayer1 implements QLearningHoundPlayer {
 		if(gameBoard.hasWon() == 0)
 			return 0.0;
 		else if(gameBoard.hasWon() == 1)
-			return -50.0;
+			return 100.0;
 		else if(gameBoard.hasWon() == 2)
-			return -50.0;
+			return 50.0;
 		else if(gameBoard.hasWon() == 3)
-			return 1000.0;
+			return -100.0;
 		else
 			return 0.0;
 
@@ -200,15 +189,15 @@ public class QLearningHoundPlayer1 implements QLearningHoundPlayer {
 
 			for(int j = 0; j < 11; j++)
 			{
-				System.out.print(q[chsp[0]][chsp[1]][chsp[2]][chp][currentStallingCount][i][j] + ", ");
+				System.out.print(q[chsp[0]][chsp[1]][chsp[2]][chp][i][j] + ", ");
 			}
 			System.out.println(" ");
 		}
 	}
-	
+
 	public boolean qTableCheck()
 	{
-		int changes = 0;
+		//int changes = 0;
 		for(int i = 0; i < 11; i++)
 		{
 			for(int j = 0; j < 11; j++)
@@ -219,23 +208,21 @@ public class QLearningHoundPlayer1 implements QLearningHoundPlayer {
 					{
 						for(int m = 0; m < 11; m++)
 						{
-							for(int n = 0; n < 3; n++)
+							for(int n = 0; n < 11; n++)
 							{
-								for(int o = 0; o < 11; o++)
+								//if(q[i][j][k][l][m][n] != 0.0)
 								{
-									if(q[i][j][k][l][m][n][o] != 0.0)
-									{
-										//System.out.println("På plats [" + i + ", " + j + ", " + k + ", " + l + ", " + m + ", " + n + ", " + o + "] står det: " + q[i][j][k][l][m][n][o]);
-										changes++;
-									}
+									System.out.println("På plats [" + i + ", " + j + ", " + k + ", " + l + ", " + m + ", " + n + "] står det: " + q[i][j][k][l][m][n]);
+									//changes++;
 								}
+
 							}
 						}
 					}
 				}
 			}
 		}
-		System.out.println(changes);
+		//System.out.println(changes);
 		return false;
 	}
 
@@ -243,12 +230,12 @@ public class QLearningHoundPlayer1 implements QLearningHoundPlayer {
 	{
 		epsilon = eps;
 	}
-	
+
 	public void setAlpha(double alp)
 	{
 		alpha = alp;
 	}
-	
+
 	public void setGamma(double gam)
 	{
 		gamma = gam;
