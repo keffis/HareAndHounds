@@ -27,7 +27,7 @@ public class QLearningHarePlayer1 implements HarePlayer{
 	QLearningHarePlayer1(GameBoard gb)
 	{
 		gameBoard = gb;
-		//[hund][hund][hund][hare][stallingcount][hund som ska gå][möjliga drag] skynet
+		//[hund][hund][hund][hare][stallingcount][hund som ska gï¿½][mï¿½jliga drag] skynet
 		q = new double[11][11][11][11][11][11];
 		epsilon = 0.5;
 		gamma = 0.7;
@@ -53,7 +53,7 @@ public class QLearningHarePlayer1 implements HarePlayer{
 
 
 		//chose action randomly for current state,else choose the one with max Q value
-		if(rand.nextDouble() <= epsilon)
+		if(rand.nextDouble() < epsilon)
 		{
 
 			ArrayList<Integer> pos = gameBoard.possibleMovesHare();
@@ -87,21 +87,17 @@ public class QLearningHarePlayer1 implements HarePlayer{
 			}
 
 			if(lol.size() <= 0)
-				System.out.println("HARALD E BÖG!");
+				System.out.println("HARALD E Bï¿½G!");
 			
 			moveTo = lol.get(rand.nextInt(lol.size()));
 		}
 
-
-		gameBoard.moveHare(moveTo);
-
-
-		if(gameBoard.hasWon() == 1)
-			updateQ();
-
 		phsp = Arrays.copyOf(chsp, 3);
 		php = chp;
 		previousStallingCount = currentStallingCount;
+
+		gameBoard.moveHare(moveTo);
+
 	}
 
 
@@ -152,11 +148,11 @@ public class QLearningHarePlayer1 implements HarePlayer{
 		if(gameBoard.hasWon() == 0)
 			return 0.0;
 		else if(gameBoard.hasWon() == 1)
-			return 100.0;
+			return 1.0;
 		else if(gameBoard.hasWon() == 2)
-			return 50.0;
+			return 1.0;
 		else if(gameBoard.hasWon() == 3)
-			return -100.0;
+			return -1.0;
 		else
 			return 0.0;
 
@@ -212,7 +208,7 @@ public class QLearningHarePlayer1 implements HarePlayer{
 							{
 								//if(q[i][j][k][l][m][n] != 0.0)
 								{
-									System.out.println("På plats [" + i + ", " + j + ", " + k + ", " + l + ", " + m + ", " + n + "] står det: " + q[i][j][k][l][m][n]);
+									System.out.println("Pï¿½ plats [" + i + ", " + j + ", " + k + ", " + l + ", " + m + ", " + n + "] stï¿½r det: " + q[i][j][k][l][m][n]);
 									//changes++;
 								}
 

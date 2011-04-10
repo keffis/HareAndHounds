@@ -2,7 +2,6 @@ import java.util.*;
 
 
 
-
 public class HareAndHounds {
 
 	/**
@@ -40,8 +39,7 @@ public class HareAndHounds {
 		//init end
 
 
-
-		System.out.println("VÄLKOMMEN TILL HARALDS OCH KEFFIS HARE AND HOUNDS!!");
+		System.out.println("VÃ„LKOMMEN TILL HARALDS OCH KEFFIS HARE AND HOUNDS!!");
 
 
 		while(!quit)
@@ -129,7 +127,7 @@ public class HareAndHounds {
 			choice = -1;
 			while(choice < 0)
 			{
-				System.out.print("Hur många spel vill du spela? ");
+				System.out.print("Hur mÃ¥nga spel vill du spela? ");
 
 				choice = sc.nextInt();
 				if(choice < 0)
@@ -163,8 +161,23 @@ public class HareAndHounds {
 			totalStats.numberOfGames += numberOfGames;
 			latestStats.numberOfGames += numberOfGames;
 
+			if(!showGameBoard)
+				System.out.println("0%                                            100%");
+			int p = 0;
 			for(int i = 0; i < numberOfGames; i++)
 			{
+				if(!showGameBoard)
+				{
+					if(numberOfGames <= 50)
+						p = 51;
+					else
+						p = numberOfGames / 50;
+
+					if((i % p) == 0)
+						System.out.print("=");
+				}
+
+
 				gameBoard.reset();
 				if(showGameBoard)
 				{
@@ -222,49 +235,44 @@ public class HareAndHounds {
 
 				}
 
+
+
+				if(gameBoard.hasWon() != 0)
+				{
+					if(houndPlayer == 2 || houndPlayer == 3)
+					{
+						QLearningHoundPlayer qlhp = (QLearningHoundPlayer) houndPlayers[houndPlayer];
+						qlhp.updateQ();
+					}
+
+					if(harePlayer == 3)
+					{
+						QLearningHarePlayer1 qlhp = (QLearningHarePlayer1) harePlayers[harePlayer];
+						qlhp.updateQ();
+					}
+				}
+
 				if(gameBoard.hasWon() == 1)
 				{
 					if(showGameBoard)
 						System.out.println("Haren vann, han rymde!");
 					totalStats.hareEscapeWins++;
 					latestStats.hareEscapeWins++;
-					if(houndPlayer == 2 || houndPlayer == 3)
-					{
-						QLearningHoundPlayer qlhp = (QLearningHoundPlayer) houndPlayers[houndPlayer];
-						qlhp.updateQ();
-					}
-					
-					if(harePlayer == 3)
-					{
-						QLearningHarePlayer1 qlhp = (QLearningHarePlayer1) harePlayers[harePlayer];
-						qlhp.updateQ();
-					}
+
 				}
 				if(gameBoard.hasWon() == 2)
 				{
 					if(showGameBoard)
-						System.out.println("Haren vann, hundarna dröjde för länge!");
+						System.out.println("Haren vann, hundarna drÃ¶jde fÃ¶r lÃ¤nge!");
 					totalStats.hareStallingWins++;
 					latestStats.hareStallingWins++;
-					
-					if(harePlayer == 3)
-					{
-						QLearningHarePlayer1 qlhp = (QLearningHarePlayer1) harePlayers[harePlayer];
-						qlhp.updateQ();
-					}
 				}
 				if(gameBoard.hasWon() == 3)
 				{
 					if(showGameBoard)
-						System.out.println("Hundarna vann, de åt upp haren!");
+						System.out.println("Hundarna vann, de Ã¥t upp haren!");
 					totalStats.houndWins++;
 					latestStats.houndWins++;
-					
-					if(harePlayer == 3)
-					{
-						QLearningHarePlayer1 qlhp = (QLearningHarePlayer1) harePlayers[harePlayer];
-						qlhp.updateQ();
-					}
 				}
 
 				if(showGameBoard)
@@ -287,7 +295,7 @@ public class HareAndHounds {
 				QLearningHoundPlayer qlhp = (QLearningHoundPlayer) houndPlayers[houndPlayer];
 				qlhp.qTableCheck();
 			}
-			
+
 			if((harePlayer == 3))
 			{
 				QLearningHarePlayer1 qlhp = (QLearningHarePlayer1) harePlayers[harePlayer];
@@ -305,7 +313,7 @@ public class HareAndHounds {
 				quit = true;
 			else 
 				quit = false;
-			
+
 
 		}
 	}
